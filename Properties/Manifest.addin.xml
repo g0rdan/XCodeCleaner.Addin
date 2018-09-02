@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ExtensionModel>
+    <Extension path = "/MonoDevelop/Ide/Commands/Edit">
+        <Command id = "XCodeCleanerAddin.XcodeCleanerCommands.CleanXCodeCache"
+                 _label = "Clean XCode cache"
+                 _description = "Cleaning XCode cache"
+                 defaultHandler = "XCodeCleanerAddin.CleanXCodeCacheHandler"/>
+    </Extension>
+
+    <Extension path = "/MonoDevelop/Ide/MainMenu/Project">
+        <CommandItem id="XCodeCleanerAddin.XcodeCleanerCommands.CleanXCodeCache" />
+    </Extension>
+    
+    <Extension path="/MonoDevelop/Ide/ContextMenu/ProjectPad">
+        <Condition id="ItemType" value="Project">
+            <CommandItem id="XCodeCleanerAddin.XcodeCleanerCommands.CleanXCodeCache" />
+        </Condition>
+    </Extension>
+</ExtensionModel>
