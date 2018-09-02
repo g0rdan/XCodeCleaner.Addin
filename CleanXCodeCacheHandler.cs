@@ -17,7 +17,10 @@ namespace XCodeCleanerAddin
 
                 var username = await GetUserName();
                 if (string.IsNullOrWhiteSpace(username))
+                {
+                    Console.WriteLine($"XCode Cleaner: can't find user name in the system");
                     return;
+                }
 
                 username = username.Replace(Environment.NewLine, string.Empty);
                 var path = $"/Users/{username}/Library/Developer/Xcode/DerivedData/";
@@ -32,10 +35,12 @@ namespace XCodeCleanerAddin
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"{innerDirectory} folder hasn't been deleted: {ex.Message}");
+                            Console.WriteLine($"XCode Cleaner: {innerDirectory} folder hasn't been deleted: {ex.Message}");
                         }
                     }
                 }
+                else
+                    Console.WriteLine($"XCode Cleaner: {path} path doesn't exist");
             });
         }
 
