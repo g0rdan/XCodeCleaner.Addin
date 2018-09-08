@@ -13,7 +13,15 @@ namespace XCodeCleanerAddin
     {
         protected override void Run()
         {
-            Task.Run(async () => {
+            Task.WaitAll(
+                CleanDerivedData(),
+                CleanVarFolders()
+            );
+        }
+
+        Task CleanDerivedData()
+        {
+            return Task.Run(async () => {
 
                 var username = await GetUserName();
                 if (string.IsNullOrWhiteSpace(username))
@@ -36,6 +44,50 @@ namespace XCodeCleanerAddin
                         catch (Exception ex)
                         {
                             Console.WriteLine($"XCode Cleaner: {innerDirectory} folder hasn't been deleted: {ex.Message}");
+                        }
+                    }
+                }
+                else
+                    Console.WriteLine($"XCode Cleaner: {path} path doesn't exist");
+            });
+        }
+
+        /// <summary>
+        /// TODO: actually, usual instance of vs4mac doesn't have permissions
+        /// to delete folders under /var folder
+        /// </summary>
+        Task CleanVarFolders()
+        {
+            return Task.Run(() => {
+
+                var path = "/var/folders";
+                if (Directory.Exists(path))
+                {
+                    foreach (var innerDirectoryPath in Directory.EnumerateDirectories(path))
+                    {
+                        var innerDirectory = Directory.CreateDirectory(innerDirectoryPath);
+                        foreach (var file in innerDirectory.EnumerateFiles())
+                        {
+                            try
+                            {
+                                file.IsReadOnly = false;
+                                file.Delete();
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"XCode Cleaner: {file} file hasn't been deleted: {ex.Message}");
+                            }
+                        }
+                        foreach (var folder in innerDirectory.EnumerateDirectories())
+                        {
+                            try
+                            {
+                                folder.Delete();
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"XCode Cleaner: {folder} fodler folder hasn't been cleaned: {ex.Message}");
+                            }
                         }
                     }
                 }
